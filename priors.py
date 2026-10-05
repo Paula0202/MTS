@@ -21,27 +21,75 @@ def gaussian_mixture_2d(x, means, sigmas, weights):
 
     return value
 
-def integrate_density_over_geometry(geometry, density_fn, n_grid=400):
+def integrate_density_over_geometry(
+    geometry,
+    density_fn,
+    n_grid=100
+):
+    """
+    Numerical midpoint integration of a continuous function
+    over a Shapely geometry.
+
+    The bounding box is divided into n_grid x n_grid
+    rectangular integration elements. The density is evaluated
+    at the midpoint of each element.
+
+    Midpoint sampling avoids systematic boundary loss caused by
+    evaluating points exactly on polygon boundaries.
+    """
 
     if geometry.is_empty:
         return 0.0
-    
-    minx, miny, maxx, maxy = (geometry.bounds)
-    xs = np.linspace(minx, maxx, n_grid)
-    ys = np.linspace(miny, maxy, n_grid)
-    dx = (maxx - minx)/(n_grid - 1)
-    dy = (maxy - miny)/(n_grid -1)
+
+    minx, miny, maxx, maxy = geometry.bounds
+
+    width = maxx - minx
+    height = maxy - miny
+
+    if width <= 0.0 or height <= 0.0:
+        return 0.0
+
+    dx = width / n_grid
+    dy = height / n_grid
+
+    xs = (
+        minx
+        +
+        (np.arange(n_grid) + 0.5) * dx
+    )
+
+    ys = (
+        miny
+        +
+        (np.arange(n_grid) + 0.5) * dy
+    )
 
     total = 0.0
 
     for x in xs:
         for y in ys:
 
-            point = Point(x, y)
-            if geometry.contains(point):
-                total += (density_fn(np.array([x, y]))*dx*dy)
+            point = Point(
+                float(x),
+                float(y)
+            )
 
-    return total
+            if geometry.covers(point):
+
+                total += (
+                    density_fn(
+                        np.array([
+                            x,
+                            y
+                        ])
+                    )
+                    *
+                    dx
+                    *
+                    dy
+                )
+
+    return float(total)
 
 def normalize_prior_over_domain(omega, raw_density_fn, n_grid=400):
 

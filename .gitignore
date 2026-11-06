@@ -15,8 +15,6 @@ venv/
 # VS Code local settings
 .vscode/
 
-# Generated figures/results
-figures/output/
 
 # Editor/system files
 .DS_Store

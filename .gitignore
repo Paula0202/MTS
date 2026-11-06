@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 
+# Intermediate experiment results
+*_partial.csv
+
 # Virtual environments
 .venv/
 venv/
@@ -14,3 +17,28 @@ venv/
 
 # Generated figures/results
 figures/output/
+
+# Editor/system files
+.DS_Store
+Thumbs.db
+
+# Auxiliary scripts used to build Figure 1
+figure1_box1.py
+figure1_box3.py
+figure1_minifigures.py
+figure1_minisearch.py
+figure1_plot.py
+
+# Obsolete/auxiliary paper figure scripts
+figure3_canonical_initialization.png
+
+# Diagnostic/obsolete plotting scripts
+plot_lawnmower_routes.py
+figures/lawnmower_routes_square_N100.pdf
+figures/lawnmower_routes_square_N100.png
+
+# PNG Files
+*.png
+
+# Large raw Monte Carlo output
+results/search_experiments.csv
